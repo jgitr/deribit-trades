@@ -2,10 +2,15 @@ import asyncio
 import json
 import time
 import csv
+import keyring
+import sys
 from interface import deribit_interface
 
-CLIENT_ID = '2MgTUxpK'
-CLIENT_SECRET = 'IPoES_Vpvb3-3XqJi2IAdZvX4XmooHUxeIPw4831BEM'
+CLIENT_ID = ''
+CLIENT_SECRET = ''
+
+if CLIENT_ID == '' or CLIENT_SECRET == '':
+	sys.exit('Run save_credentials.py first in order to store your credentials on this machine!')
 
 ### system value ###
 deribit = deribit_interface.Deribit(test=False,
