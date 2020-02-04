@@ -33,8 +33,7 @@ for maturity in all_maturitystr:
 		all_instruments.append(put)
 print(all_instruments)
 
-#trades = deribit.get_user_trades_by_instrument('ETH')
-#trades = deribit.get_transactions('BTC', 10)
+# Retrieving trades works now // example
 trades = deribit.get_last_trades_by_currency('BTC', 'option') # TO BE DONE
 #print(trades)
 
