@@ -5,9 +5,7 @@ import csv
 import keyring
 import sys
 from interface import deribit_interface
-
-CLIENT_ID = ''
-CLIENT_SECRET = ''
+from load_credentials import CLIENT_ID, CLIENT_SECRET
 
 if CLIENT_ID == '' or CLIENT_SECRET == '':
 	sys.exit('Run save_credentials.py first in order to store your credentials on this machine!')
@@ -37,7 +35,7 @@ print(all_instruments)
 
 #trades = deribit.get_user_trades_by_instrument('ETH')
 #trades = deribit.get_transactions('BTC', 10)
-#trades = deribit.get_last_trades_by_currency('BTC', 'option') # TO BE DONE
+trades = deribit.get_last_trades_by_currency('BTC', 'option') # TO BE DONE
 #print(trades)
 
 def extract_greeks(instrument, ob):
@@ -57,5 +55,5 @@ while True:
 			print(instrument)
 			print(ob)
 			save_dict_to_file(extract_greeks(instrument, ob))
-		time.sleep(1)
+		time.sleep(pausetime)
 
