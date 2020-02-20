@@ -170,7 +170,17 @@ class Deribit:
 		}
 		return self._sender(msg)
 
-	
+	def get_last_trades_by_currency(self, _currency, _kind, _depth):
+		msg = {
+			"jsonrpc": "2.0",
+			"id" : None,
+			"method": "public/get_last_trades_by_currency",
+			"params": {
+				"currency": _currency,
+				"kind" : _kind,
+				"count" : _depth}
+		}
+		return self._sender(msg)
 	
 	@thread_decor
 	def start_orderbook_update(self, instrument_name='BTC-PERPETUAL'): # current orderbook contain in 'Orderbook'
@@ -204,44 +214,7 @@ class Deribit:
 		except Exception as er:
 			self.logwritter('Orderbook updater error: '+str(er))
 
-	def get_user_trades_by_instrument(self, _currency):
-		msg = {
-			"jsonrpc": "2.0",
-			"method": "private/get_user_trades_by_currency",
-			"params": {
-				'currency' : _currency,
-				"start_id": "ETH-34066",
-				"count": 2
-			}
-		}
-
-	def get_transactions(self, _currency, _count):
-		msg = {
-			"jsonrpc": "2.0",
-			"method": "private/get_order_history_by_currency",
-			"params": {
-				"currency": _currency,
-				"count": _count}
-		}
-		return self._sender(msg)
-
-	def test(self):
-		msg = {
-			"jsonrpc": "2.0",
-			"method": "private/get_last_trades_by_currency",
-			"params" : {}
-		}
-		return self._sender(msg)
-
-	def get_last_trades_by_currency(self, _currency, _kind):
-		msg = {
-			"jsonrpc": "2.0",
-			"method": "private/get_last_trades_by_currency",
-			"params": {
-				"currency": _currency,
-				"kind" : _kind}
-		}
-		return self._sender(msg)
+	
 '''
  You can add new methods. Example:
 

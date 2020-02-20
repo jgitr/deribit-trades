@@ -2,10 +2,13 @@ import asyncio
 import json
 import time
 import csv
+import keyring
+import sys
 from interface import deribit_interface
+from load_credentials import CLIENT_ID, CLIENT_SECRET
 
-CLIENT_ID = '2MgTUxpK'
-CLIENT_SECRET = 'IPoES_Vpvb3-3XqJi2IAdZvX4XmooHUxeIPw4831BEM'
+if CLIENT_ID == '' or CLIENT_SECRET == '':
+	sys.exit('Run save_credentials.py first in order to store your credentials on this machine!')
 
 ### system value ###
 deribit = deribit_interface.Deribit(test=False,
@@ -30,10 +33,9 @@ for maturity in all_maturitystr:
 		all_instruments.append(put)
 print(all_instruments)
 
-#trades = deribit.get_user_trades_by_instrument('ETH')
-#trades = deribit.get_transactions('BTC', 10)
-#trades = deribit.get_last_trades_by_currency('BTC', 'option') # TO BE DONE
-#print(trades)
+# Retrieving trades works now // example
+trades = deribit.get_last_trades_by_currency('BTC', 'option', 30) # TO BE DONE
+print(trades)
 
 def extract_greeks(instrument, ob):
 	return [instrument, ob['greeks']]
@@ -52,5 +54,5 @@ while True:
 			print(instrument)
 			print(ob)
 			save_dict_to_file(extract_greeks(instrument, ob))
-		time.sleep(1)
+		time.sleep(pausetime)
 
