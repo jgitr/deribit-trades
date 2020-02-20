@@ -170,14 +170,15 @@ class Deribit:
 		}
 		return self._sender(msg)
 
-	def get_last_trades_by_currency(self, _currency, _kind):
+	def get_last_trades_by_currency(self, _currency, _kind, _depth):
 		msg = {
 			"jsonrpc": "2.0",
 			"id" : None,
 			"method": "public/get_last_trades_by_currency",
 			"params": {
 				"currency": _currency,
-				"kind" : _kind}
+				"kind" : _kind,
+				"count" : _depth}
 		}
 		return self._sender(msg)
 	

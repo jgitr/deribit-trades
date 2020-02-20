@@ -34,8 +34,8 @@ for maturity in all_maturitystr:
 print(all_instruments)
 
 # Retrieving trades works now // example
-trades = deribit.get_last_trades_by_currency('BTC', 'option') # TO BE DONE
-#print(trades)
+trades = deribit.get_last_trades_by_currency('BTC', 'option', 30) # TO BE DONE
+print(trades)
 
 def extract_greeks(instrument, ob):
 	return [instrument, ob['greeks']]
