@@ -22,7 +22,7 @@ def construct_instruments(maturitystr, strike):
 	return call, put
 
 
-all_maturitystr = ['14FEB20', '28FEB20']
+all_maturitystr = ['28FEB20']
 all_strikes = [10000, 10250]
 all_instruments = []
 
@@ -34,8 +34,8 @@ for maturity in all_maturitystr:
 print(all_instruments)
 
 # Retrieving trades works now // example
-trades = deribit.get_last_trades_by_currency('BTC', 'option', 30) # TO BE DONE
-print(trades)
+#trades = deribit.get_last_trades_by_currency('BTC', 'option', 30) # TO BE DONE
+#print(trades)
 
 def extract_greeks(instrument, ob):
 	return [instrument, ob['greeks']]
@@ -46,13 +46,20 @@ def save_dict_to_file(dic):
     f.write(str(dic) + '\n')
     f.close()
 
-pausetime = 1
+def check_memory(_list, max_len = 1000):
+	if len(_list) > max_len:
+		_list = []
+	return _list
+
+pausetime = 5
+collected_trades = []
 while True:
-	for instrument in all_instruments:
-		ob = deribit.get_order_book(instrument)
-		if ob is not None:
-			print(instrument)
-			print(ob)
-			save_dict_to_file(extract_greeks(instrument, ob))
+		trades = deribit.get_last_trades_by_currency('BTC', 'option', 30) # TO BE DONE
+		if trades is not None:
+			for trade in trades['trades']:
+				if trade not in collected_trades and trade['instrument_name'].startswith('BTC-28FEB20'):
+					collected_trades.append(trade)
+					save_dict_to_file(trade)
+		check_memory(trades)
 		time.sleep(pausetime)
 
