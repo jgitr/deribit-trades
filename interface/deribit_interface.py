@@ -181,6 +181,19 @@ class Deribit:
 				"count" : _depth}
 		}
 		return self._sender(msg)
+
+	def get_book_summary_by_currency(self, _currency, _kind):
+		msg = \
+			{
+			"jsonrpc" : "2.0",
+			"id" : 9344,
+			"method" : "public/get_book_summary_by_currency",
+			"params" : {
+				"currency" : _currency,
+				"kind" : _kind
+				}
+			}
+		return self._sender(msg)
 	
 	@thread_decor
 	def start_orderbook_update(self, instrument_name='BTC-PERPETUAL'): # current orderbook contain in 'Orderbook'
