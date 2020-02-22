@@ -28,6 +28,8 @@ def mkplot(x, y, fname, title):
     fig = plt.figure()
     plt.scatter(x, y)
     plt.title(title)
+    plt.xlabel('Strike')
+    plt.ylabel('Price')
     fig.savefig(fname + '.png', transparent=True)
 
 mkplot(call_strikes, call_prices, 'Calls-28Feb2020', 'Calls-28Feb2020 Prices vs. Strikes')
