@@ -54,12 +54,22 @@ all_option_instruments = create_instruments('BTC', 'option')
 pausetime = 5
 collected_trades = []
 while True:
-		trades = deribit.get_last_trades_by_currency('BTC', 'option', 30) # TO BE DONE
-		if trades is not None:
-			for trade in trades['trades']:
-				if trade not in collected_trades and trade['instrument_name'].startswith('BTC-28FEB20'):
-					collected_trades.append(trade)
-					save_dict_to_file(trade)
-		check_memory(trades)
+	# All orderbooks
+	for instrument in all_option_instruments:
+		ob = deribit.get_order_book(instrument)
+		if ob is not None:
+			print(instrument)
+			print(ob)
+			save_dict_to_file(extract_greeks(instrument, ob))
 		time.sleep(pausetime)
+
+	# All executed trades
+	trades = deribit.get_last_trades_by_currency('BTC', 'option', 30) # TO BE DONE
+	if trades is not None:
+		for trade in trades['trades']:
+			if trade not in collected_trades:
+				collected_trades.append(trade)
+				save_dict_to_file(trade)
+	check_memory(trades)
+	time.sleep(pausetime)
 
