@@ -15,14 +15,14 @@ class Deribit:
 	def __init__(self, test, only_public=False, client_ID=False, client_secret=False):
 		if client_ID or client_secret: only_public = False
 		if only_public:
-			self.logwritter(msg='WARNING! Only public methods available!')
+			self.logwriter(msg='WARNING! Only public methods available!')
 			return
 		self.WSS_url = 'wss://www.test.deribit.com/ws/api/v2' if test else 'wss://www.deribit.com/ws/api/v2'
 		self._auth(client_ID, client_secret, self.WSS_url)
 
 
 
-	def logwritter(self, msg, filename='log.log'):
+	def logwriter(self, msg, filename='log.log'):
 		out = datetime.now().strftime("\n[%Y%m%d,%H:%M:%S] ")+str(msg)
 		print(out)
 		open(filename, 'a').write(out)
@@ -41,23 +41,23 @@ class Deribit:
 					"client_secret" : client_secret
 				  }
 				}
-			self.logwritter('Auth OK\n############')
+			self.logwriter('Auth OK\n############')
 			print('identified')
 			return self._sender(msg)
 		except Exception as er:
-			self.logwritter('auth error:'+str(er))
+			self.logwriter('auth error:'+str(er))
 
 
 
 	def _sender(self, msg):
 		try:
-			self.logwritter(msg['method'])
+			self.logwriter(msg['method'])
 			self._WSS.send(json.dumps(msg))
 			out = json.loads(self._WSS.recv())
 			return out['result']
 		except Exception as er:
-			self.logwritter(str(out))
-			self.logwritter('_sender error: '+str(er))
+			self.logwriter(str(out))
+			self.logwriter('_sender error: '+str(er))
 
 
 
@@ -74,7 +74,7 @@ class Deribit:
 				reduce_only=False,
 				trigger=None):
 		if not side=='buy' and not side=='sell':
-			self.logwritter('ERROR: incorect param "side" for make_order')
+			self.logwriter('ERROR: incorect param "side" for make_order')
 			return
 		msg ={
 			  "jsonrpc": "2.0",
@@ -142,7 +142,7 @@ class Deribit:
 
 
 
-	def get_order_book(self, instrument_name, depth=1):
+	def get_order_book(self, instrument_name, depth=5):
 		msg ={
 		  "jsonrpc": "2.0",
 		  "id" : None,
@@ -208,13 +208,13 @@ class Deribit:
 			def on_message(ws, message):
 				print(message)
 				if self.__first: self.__first=False; return
-				#self.logwritter('Orderbook')
+				#self.logwriter('Orderbook')
 				self.Orderbook = json.loads(message)['params']['data']
 				#if func_for_quoting: func_for_quoting() # Запуск вспомогательной функции, если она есть.
 			def on_error(ws, error):
-				self.logwritter('Orderbook updater error: '+str(error))
+				self.logwriter('Orderbook updater error: '+str(error))
 			def on_close(ws):
-				self.logwritter('Orderbook updater error:closed connect')
+				self.logwriter('Orderbook updater error:closed connect')
 			def on_open(ws):
 				ws.send(json.dumps(msg))
 			websocket.enableTrace(True)
@@ -225,7 +225,7 @@ class Deribit:
 			ws.on_open = on_open
 			ws.run_forever()
 		except Exception as er:
-			self.logwritter('Orderbook updater error: '+str(er))
+			self.logwriter('Orderbook updater error: '+str(er))
 
 	
 '''
