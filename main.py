@@ -61,12 +61,14 @@ while True:
 		for instrument in all_option_instruments:
 			ob = deribit.get_order_book(instrument)
 			if ob is not None:
-				print(instrument)
-				print(ob)
+				#print(instrument)
+				#print(ob)
 				if ob['change_id'] not in collected_change_ids:
 					collected_change_ids.append(ob['change_id'])
 					save_dict_to_file(ob, orderbook_file)
 					check_memory(collected_change_ids)
+				else:
+					print('already got orderbook')
 			time.sleep(0.1)
 
 		# All executed trades
