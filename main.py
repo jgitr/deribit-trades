@@ -6,6 +6,7 @@ import keyring
 import sys
 from interface import deribit_interface
 from load_credentials import CLIENT_ID, CLIENT_SECRET
+from pymongo import MongoClient
 
 if CLIENT_ID == '' or CLIENT_SECRET == '':
 	sys.exit('Run save_credentials.py first in order to store your credentials on this machine!')
@@ -48,6 +49,13 @@ def check_memory(_list, max_len = 1000):
 		_list = []
 	return _list
 
+
+client = MongoClient('mongodb://localhost:27017')
+db = client['pymongo_test']
+orderbooks = db.orderbooks
+transactions = db.transactions
+
+
 orderbook_file 			= 'orderbooks'
 trade_file 				= 'trades'
 collected_change_ids 	= []
@@ -61,12 +69,24 @@ while True:
 		for instrument in all_option_instruments:
 			ob = deribit.get_order_book(instrument)
 			if ob is not None:
-				#print(instrument)
-				#print(ob)
+				print(instrument)
+				print(ob)
 				if ob['change_id'] not in collected_change_ids:
 					collected_change_ids.append(ob['change_id'])
+
+					# Save locally
 					save_dict_to_file(ob, orderbook_file)
 					check_memory(collected_change_ids)
+
+					# Add to db
+					res = orderbooks.insert_one(ob)
+					print('One orderbook: {0}'.format(res.inserted_id))
+
+					# Retrieve from db
+					#posts.find_one({'author': 'Bill'})
+
+					#test_retrieve = orderbooks.find_one({'instrument_name':})
+					#print(test_retrieve)
 				else:
 					print('already got orderbook')
 			time.sleep(0.1)
@@ -77,7 +97,14 @@ while True:
 			for trade in trades['trades']:
 				if trade not in collected_trades:
 					collected_trades.append(trade)
+					
+					# Save locally
 					save_dict_to_file(trade, trade_file)
+
+					# Add to db
+					res_transactions = transactions.insert_one(trade)
+					print('One trade: {0}'.format(res_transactions.inserted_id))
+
 		check_memory(trades)
 		time.sleep(1)
 	else:
