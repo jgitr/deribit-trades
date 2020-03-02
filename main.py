@@ -83,8 +83,6 @@ while True:
 					print('One orderbook: {0}'.format(res.inserted_id))
 
 					# Retrieve from db
-					#posts.find_one({'author': 'Bill'})
-
 					#test_retrieve = orderbooks.find_one({'instrument_name':})
 					#print(test_retrieve)
 				else:
