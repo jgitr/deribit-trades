@@ -61,10 +61,10 @@ trade_file 				= 'trades'
 collected_change_ids 	= []
 collected_trades 		= []
 while True:
+	try:
 	# Retrieve all instruments
-	all_option_instruments = create_instruments('BTC', 'option')
-
-	if len(all_option_instruments) > 0:
+		all_option_instruments = create_instruments('BTC', 'option')
+		assert(len(all_option_instruments) > 0)
 		# All orderbooks
 		for instrument in all_option_instruments:
 			ob = deribit.get_order_book(instrument)
@@ -105,8 +105,8 @@ while True:
 
 		check_memory(trades)
 		time.sleep(1)
-	else:
-		logwriter('No Instruments!')
+	except Exception as e:
+		logwriter('No Instruments! ', e)
 		time.sleep(60)
 
 
