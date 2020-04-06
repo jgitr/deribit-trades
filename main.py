@@ -15,7 +15,6 @@ if CLIENT_ID == '' or CLIENT_SECRET == '':
 deribit = deribit_interface.Deribit(test=False,
 	client_ID=CLIENT_ID,
  	client_secret=CLIENT_SECRET)
-logwriter = deribit.logwriter
 
 def construct_instruments(maturitystr, strike):
 	# Manually create instrument
@@ -37,17 +36,6 @@ def create_instruments(_currency, _kind):
 
 def extract_greeks(instrument, ob):
 	return [instrument, ob['greeks']]
-
-def save_dict_to_file(dict, fname):
-	# Todo: This must be appended for each dictionary to come
-    f = open(fname + '.txt','a')
-    f.write(str(dict) + '\n')
-    f.close()
-
-def check_memory(_list, max_len = 1000):
-	if len(_list) > max_len:
-		_list = []
-	return _list
 
 
 client = MongoClient('mongodb://localhost:27017')
@@ -74,10 +62,6 @@ while True:
 				if ob['change_id'] not in collected_change_ids:
 					collected_change_ids.append(ob['change_id'])
 
-					# Save locally
-					save_dict_to_file(ob, orderbook_file)
-					check_memory(collected_change_ids)
-
 					# Add to db
 					res = orderbooks.insert_one(ob)
 					print('One orderbook: {0}'.format(res.inserted_id))
@@ -96,17 +80,12 @@ while True:
 				if trade not in collected_trades:
 					collected_trades.append(trade)
 					
-					# Save locally
-					save_dict_to_file(trade, trade_file)
-
 					# Add to db
 					res_transactions = transactions.insert_one(trade)
 					print('One trade: {0}'.format(res_transactions.inserted_id))
 
-		check_memory(trades)
 		time.sleep(1)
 	except Exception as e:
-		logwriter('No Instruments! ', e)
 		time.sleep(60)
 
 
