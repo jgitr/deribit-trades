@@ -7,6 +7,7 @@ import sys
 from interface import deribit_interface
 from load_credentials import CLIENT_ID, CLIENT_SECRET
 from pymongo import MongoClient
+from mails import send_mail
 
 if CLIENT_ID == '' or CLIENT_SECRET == '':
 	sys.exit('Run save_credentials.py first in order to store your credentials on this machine!')
@@ -45,8 +46,9 @@ def save_dict_to_file(dict, fname):
     f.close()
 
 def check_memory(_list, max_len = 1000):
-	if len(_list) > max_len:
-		_list = []
+	curr_len = len(_list)
+	if curr_len > max_len:
+		del _list[:max_len]
 	return _list
 
 
@@ -54,7 +56,6 @@ client = MongoClient('mongodb://localhost:27017')
 db = client['pymongo_test']
 orderbooks = db.orderbooks
 transactions = db.transactions
-
 
 orderbook_file 			= 'orderbooks'
 trade_file 				= 'trades'
@@ -74,20 +75,12 @@ while True:
 				if ob['change_id'] not in collected_change_ids:
 					collected_change_ids.append(ob['change_id'])
 
-					# Save locally
-					save_dict_to_file(ob, orderbook_file)
-					check_memory(collected_change_ids)
-
 					# Add to db
 					res = orderbooks.insert_one(ob)
 					print('One orderbook: {0}'.format(res.inserted_id))
 
-					# Retrieve from db
-					#test_retrieve = orderbooks.find_one({'instrument_name':})
-					#print(test_retrieve)
 				else:
 					print('already got orderbook')
-			time.sleep(0.1)
 
 		# All executed trades
 		trades = deribit.get_last_trades_by_currency('BTC', 'option', 100) # TO BE DONE
@@ -95,18 +88,18 @@ while True:
 			for trade in trades['trades']:
 				if trade not in collected_trades:
 					collected_trades.append(trade)
-					
-					# Save locally
-					save_dict_to_file(trade, trade_file)
 
 					# Add to db
 					res_transactions = transactions.insert_one(trade)
 					print('One trade: {0}'.format(res_transactions.inserted_id))
 
-		check_memory(trades)
-		time.sleep(1)
 	except Exception as e:
-		logwriter('No Instruments! ', e)
+		logwriter('Error ', e)
+		send_mail(e, 'Scraper Error')
 		time.sleep(60)
+	finally:
+		check_memory(collected_change_ids)
+		check_memory(trades)
+		time.sleep(0.1)
 
 
