@@ -81,6 +81,7 @@ while True:
 
 				else:
 					print('already got orderbook')
+			check_memory(collected_change_ids)
 
 		# All executed trades
 		trades = deribit.get_last_trades_by_currency('BTC', 'option', 100) # TO BE DONE
@@ -93,13 +94,13 @@ while True:
 					res_transactions = transactions.insert_one(trade)
 					print('One trade: {0}'.format(res_transactions.inserted_id))
 
+			check_memory(trades)
+
 	except Exception as e:
 		logwriter('Error ', e)
 		send_mail(e, 'Scraper Error')
-		time.sleep(60)
+		time.sleep(1)
 	finally:
-		check_memory(collected_change_ids)
-		check_memory(trades)
-		time.sleep(0.1)
+		time.sleep(1)
 
 
