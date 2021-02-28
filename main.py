@@ -93,6 +93,8 @@ while True:
 					# Add to db
 					res = orderbooks.insert_one(ob)
 					print('One orderbook: {0}'.format(res.inserted_id))
+
+					# For the Rate Limit
 					time.sleep(0.05)
 
 				else:
