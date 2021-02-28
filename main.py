@@ -66,6 +66,21 @@ while True:
 	# Retrieve all instruments
 		all_option_instruments = create_instruments('BTC', 'option')
 		assert(len(all_option_instruments) > 0)
+
+		# All executed trades
+		trades = deribit.get_last_trades_by_currency('BTC', 'option', 100) # TO BE DONE
+		if trades is not None:
+			for trade in trades['trades']:
+				if trade not in collected_trades:
+					collected_trades.append(trade)
+
+					# Add to db
+					res_transactions = transactions.insert_one(trade)
+					print('One trade: {0}'.format(res_transactions.inserted_id))
+
+			check_memory(trades)
+
+		time.sleep(1)
 		# All orderbooks
 		for instrument in all_option_instruments:
 			ob = deribit.get_order_book(instrument)
@@ -82,20 +97,8 @@ while True:
 				else:
 					print('already got orderbook')
 			check_memory(collected_change_ids)
-		time.sleep(1)
 		
-		# All executed trades
-		trades = deribit.get_last_trades_by_currency('BTC', 'option', 100) # TO BE DONE
-		if trades is not None:
-			for trade in trades['trades']:
-				if trade not in collected_trades:
-					collected_trades.append(trade)
 
-					# Add to db
-					res_transactions = transactions.insert_one(trade)
-					print('One trade: {0}'.format(res_transactions.inserted_id))
-
-			check_memory(trades)
 
 	except Exception as e:
 		logwriter('Error ', e)
