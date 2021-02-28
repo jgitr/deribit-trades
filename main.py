@@ -93,6 +93,7 @@ while True:
 					# Add to db
 					res = orderbooks.insert_one(ob)
 					print('One orderbook: {0}'.format(res.inserted_id))
+					time.sleep(0.05)
 
 				else:
 					print('already got orderbook')
