@@ -56,8 +56,7 @@ class Deribit:
 			out = json.loads(self._WSS.recv())
 			return out['result']
 		except Exception as er:
-			self.logwriter(str(out))
-			self.logwriter('_sender error: '+str(er))
+			self.logwriter('_sender error: ' + str(er))
 
 
 
