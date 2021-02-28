@@ -23,10 +23,12 @@ class Deribit:
 
 
 	def logwriter(self, msg, filename='log.log'):
-		out = datetime.now().strftime("\n[%Y%m%d,%H:%M:%S] ")+str(msg)
-		print(out)
-		open(filename, 'a').write(out)
-
+		try:
+			out = datetime.now().strftime("\n[%Y%m%d,%H:%M:%S] ")+str(msg)
+			print(out)
+			open(filename, 'a').write(out)
+		except Exception as e:
+			print('couldnt write to log: ', e)
 
 
 	def _auth(self, client_ID, client_secret, WSS_url):
