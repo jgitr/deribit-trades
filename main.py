@@ -82,7 +82,8 @@ while True:
 				else:
 					print('already got orderbook')
 			check_memory(collected_change_ids)
-
+		time.sleep(1)
+		
 		# All executed trades
 		trades = deribit.get_last_trades_by_currency('BTC', 'option', 100) # TO BE DONE
 		if trades is not None:
