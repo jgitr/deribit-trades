@@ -95,7 +95,7 @@ while True:
 					print('One orderbook: {0}'.format(res.inserted_id))
 
 					# For the Rate Limit
-					time.sleep(0.05)
+					time.sleep(0.1)
 
 				else:
 					print('already got orderbook')
