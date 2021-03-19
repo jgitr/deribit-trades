@@ -1,7 +1,6 @@
 #!/bin/bash
 
-while true
-do
-python3 main.py
-sleep 10
-done
+while true; do
+    nohup python3 main.py >> test.out 
+    result=$?
+done &

@@ -62,54 +62,52 @@ def main():
 	trade_file 				= 'trades'
 	collected_change_ids 	= []
 	collected_trades 		= []
-	while True:
-		try:
-		# Retrieve all instruments
-			all_option_instruments = create_instruments('BTC', 'option')
-			assert(len(all_option_instruments) > 0)
 
-			# All executed trades
-			trades = deribit.get_last_trades_by_currency('BTC', 'option', 100) # TO BE DONE
-			if trades is not None:
-				for trade in trades['trades']:
-					if trade not in collected_trades:
-						collected_trades.append(trade)
+	try:
+	# Retrieve all instruments
+		all_option_instruments = create_instruments('BTC', 'option')
+		assert(len(all_option_instruments) > 0)
 
-						# Add to db
-						res_transactions = transactions.insert_one(trade)
-						print('One trade: {0}'.format(res_transactions.inserted_id))
+		# All executed trades
+		trades = deribit.get_last_trades_by_currency('BTC', 'option', 100) # TO BE DONE
+		if trades is not None:
+			for trade in trades['trades']:
+				if trade not in collected_trades:
+					collected_trades.append(trade)
 
-				check_memory(trades)
+					# Add to db
+					res_transactions = transactions.insert_one(trade)
+					print('One trade: {0}'.format(res_transactions.inserted_id))
 
-			time.sleep(1)
-			# All orderbooks
-			for instrument in all_option_instruments:
-				ob = deribit.get_order_book(instrument)
-				if ob is not None:
-					print(instrument)
-					print(ob)
-					if ob['change_id'] not in collected_change_ids:
-						collected_change_ids.append(ob['change_id'])
+			check_memory(trades)
+		
+		time.sleep(1)
+		# All orderbooks
+		for instrument in all_option_instruments:
+			ob = deribit.get_order_book(instrument)
+			if ob is not None:
+				print(instrument)
+				print(ob)
+				if ob['change_id'] not in collected_change_ids:
+					collected_change_ids.append(ob['change_id'])
 
-						# Add to db
-						res = orderbooks.insert_one(ob)
-						print('One orderbook: {0}'.format(res.inserted_id))
+					# Add to db
+					res = orderbooks.insert_one(ob)
+					print('One orderbook: {0}'.format(res.inserted_id))
 
-						# For the Rate Limit
-						time.sleep(0.25)
+					# For the Rate Limit
+					time.sleep(0.25)
 
-					else:
-						print('already got orderbook')
-				check_memory(collected_change_ids)
-			
+				else:
+					print('already got orderbook')
+			check_memory(collected_change_ids)
 
-
-		except Exception as e:
-			logwriter('Error ', e)
-			send_mail('', '')
-			time.sleep(1)
-		finally:
-			time.sleep(1)
+	except Exception as e:
+		logwriter('Error ', e)
+		send_mail('', '')
+		time.sleep(1)
+	finally:
+		time.sleep(1)
 
 if __name__ == '__main__':
 	main()
