@@ -112,10 +112,5 @@ def main():
 			time.sleep(1)
 
 if __name__ == '__main__':
-	while True:
-		try:
-			main()
-		except Exception as e:
-			print('error in main loop: ', e)
-			time.sleep(10)
+	main()
 			
