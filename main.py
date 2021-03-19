@@ -96,7 +96,7 @@ def main():
 						print('One orderbook: {0}'.format(res.inserted_id))
 
 						# For the Rate Limit
-						time.sleep(0.1)
+						time.sleep(0.25)
 
 					else:
 						print('already got orderbook')
@@ -106,7 +106,7 @@ def main():
 
 		except Exception as e:
 			logwriter('Error ', e)
-			send_mail(e, 'Scraper Error')
+			send_mail('', '')
 			time.sleep(1)
 		finally:
 			time.sleep(1)
