@@ -1,0 +1,1 @@
+*/5 * * * * cd /Users/julian/src/deribit-trades &&  ./stopscraper.sh && ./runscraper.sh
