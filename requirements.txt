@@ -26,7 +26,7 @@ Telethon==1.18.2
 typing-extensions==3.7.4.3
 urllib3==1.24.3
 websocket-client==0.57.0
-websockets==8.1
+websockets==9.1
 zipp==3.4.0
 zope.event==4.5.0
 zope.interface==5.2.0
