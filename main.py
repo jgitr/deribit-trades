@@ -20,8 +20,8 @@ logwriter = deribit.logwriter
 
 def construct_instruments(maturitystr, strike):
 	# Manually create instrument
-	call = 'BTC-' + maturitystr + '-' + str(strike) + '-C'
-	put = 'BTC-' + maturitystr + '-'+ str(strike) + '-P'
+	call = 'ETH-' + maturitystr + '-' + str(strike) + '-C'
+	put = 'ETH-' + maturitystr + '-'+ str(strike) + '-P'
 	return call, put
 
 
@@ -54,9 +54,10 @@ def check_memory(_list, max_len = 1000):
 def main():
 
 	client = MongoClient('mongodb://localhost:27017')
-	db = client['cryptocurrency']
+	db = client['deribit-eth-test']
 	orderbooks = db.orderbooks
 	transactions = db.transactions
+	base = 'ETH'
 
 	orderbook_file 			= 'orderbooks'
 	trade_file 				= 'trades'
@@ -65,11 +66,11 @@ def main():
 
 	try:
 	# Retrieve all instruments
-		all_option_instruments = create_instruments('BTC', 'option')
+		all_option_instruments = create_instruments('ETH', 'option')
 		assert(len(all_option_instruments) > 0)
 
 		# All executed trades
-		trades = deribit.get_last_trades_by_currency('BTC', 'option', 100) # TO BE DONE
+		trades = deribit.get_last_trades_by_currency('ETH', 'option', 100) # TO BE DONE
 		if trades is not None:
 			for trade in trades['trades']:
 				if trade not in collected_trades:
