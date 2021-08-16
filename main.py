@@ -54,7 +54,7 @@ def check_memory(_list, max_len = 1000):
 def main():
 
 	client = MongoClient('mongodb://localhost:27017')
-	db = client['deribit-eth-test']
+	db = client['deribit-eth']
 	orderbooks = db.orderbooks
 	transactions = db.transactions
 	base = 'ETH'
