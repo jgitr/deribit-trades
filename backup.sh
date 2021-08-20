@@ -10,7 +10,7 @@ MONGO_HOST="127.0.0.1"
 # Database port
 MONGO_PORT="27017"
 # Backup directory
-BACKUPS_DIR="/Users/lvbuser/src/deribit-trades/backups/$MONGO_DATABASE"
+BACKUPS_DIR="/Users/julian/src/deribit-trades/backups/$MONGO_DATABASE"
 # Database user name
 DBUSERNAME="username"
 # Database password
@@ -20,7 +20,7 @@ DBAUTHDB="admin"
 # Days to keep the backup
 DAYSTORETAINBACKUP="14"
 # BRC Import Path
-brc_path="/home/julian/imported_from_g2/deribit-eth"
+brc_path="/home/julian/imported_from_g2"
 #=====================================================================
 
 TIMESTAMP=`date +%F-%H%M`
@@ -34,19 +34,23 @@ if ! mkdir -p $BACKUPS_DIR; then
   exit 1;
 fi;
 # Create dump
-mongodump -d $MONGO_DATABASE #--username $DBUSERNAME --password $DBPASSWORD --authenticationDatabase $DBAUTHDB
+mongodump -d $MONGO_DATABASE --gzip #--username $DBUSERNAME --password $DBPASSWORD --authenticationDatabase $DBAUTHDB
 # Rename dump directory to backup name
-mv dump $BACKUP_NAME
+mv dump $BACKUPS_DIR/$BACKUP_NAME
 # Compress backup
-tar -zcvf $BACKUPS_DIR/$BACKUP_NAME.tgz $BACKUP_NAME
+#tar -zcvf $BACKUPS_DIR/$BACKUP_NAME.tgz $BACKUP_NAME
 # Delete uncompressed backup
-rm -rf $BACKUP_NAME
+#rm -rf $BACKUP_NAME
 # Delete backups older than retention period
 find $BACKUPS_DIR -type f -mtime +$DAYSTORETAINBACKUP -exec rm {} +
 echo "--------------------------------------------"
 echo "Database backup complete!"
 
+# Find latest dir for upload
+UPLOADDIR=$(ls -td $BACKUPS_DIR/*/ | head -1)
+echo $UPLOADDIR
+
 # Upload to Server
 echo "Attempting to upload to BRC Server"
-scp -r $BACKUPS_DIR irtggmail:$brc_path/
+scp -r $UPLOADDIR irtggmail:$brc_path/
 echo "Upload successful"
