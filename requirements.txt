@@ -24,7 +24,7 @@ rsa==4.6
 six==1.15.0
 Telethon==1.18.2
 typing-extensions==3.7.4.3
-urllib3==1.24.3
+urllib3==1.26.5
 websocket-client==0.57.0
 websockets==8.1
 zipp==3.4.0
