@@ -1,7 +1,7 @@
 
 import smtplib
 from email.mime.text import MIMEText
-from config_example import CONFIG_INFO
+from config import CONFIG_INFO
 
 
 def send_mail(text, subject, CONFIG = CONFIG_INFO):
