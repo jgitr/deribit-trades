@@ -1,10 +1,8 @@
 #!/bin/bash
 
-#while true; do
-#    echo "rebooting scraper" >> reboot.txt
-#    nohup python3 main.py -V > pv.txt 2>&1 
-#    result=$?
-#done &
+# Log Reboot
+echo "$(date) rebooting scraper" >> reboot.txt
 
-echo "rebooting scraper" >> reboot.txt
-nohup /usr/local/bin/python3 main.py -V > pv.txt 
+# Activate Python venv
+source deribot/bin/activate
+nohup /usr/local/bin/python3 main.py -V >> pv.txt 
